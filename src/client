@@ -1,0 +1,23 @@
+java R2FClient n01 1099 put 1 1
+java R2FClient n02 1099 put 2 2
+java R2FClient n03 1099 put 3 3
+java R2FClient n04 1099 put 4 4
+java R2FClient n05 1099 put 5 5
+
+java R2FClient n01 1099 put 6 6
+java R2FClient n02 1099 put 7 7
+java R2FClient n03 1099 put 8 8
+java R2FClient n04 1099 put 9 9
+java R2FClient n05 1099 put 10 10
+
+java R2FClient n01 1099 get 2 2
+java R2FClient n02 1099 get 4 4
+java R2FClient n03 1099 get 6 6
+java R2FClient n04 1099 get 8 8
+java R2FClient n05 1099 get 10 10
+
+java R2FClient n01 1099 delete 1 1
+java R2FClient n02 1099 delete 3 3
+java R2FClient n03 1099 delete 5 5
+java R2FClient n04 1099 delete 7 7
+java R2FClient n05 1099 delete 9 9
