@@ -1,3 +1,4 @@
+import java.net.UnknownHostException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.Naming;		//Import naming classes to bind to rmiregistry
 import java.rmi.RemoteException;
@@ -5,26 +6,29 @@ import java.util.HashMap;
 
 public class PaxosServer
 {
-	public static void main(String args[]) throws RemoteException
+	public static void main(String args[]) throws RemoteException, UnknownHostException
 	{
 		long timestart = System.currentTimeMillis();
 		String[] otherServers = {"","","",""};
 		int port;
-		if (args.length >= 4) // If there are the minimum # of command line arguments
+		String node = java.net.InetAddress.getLocalHost().getHostName();
+		int isLeader = 0;
+		if (args.length >= 5) // If there are the minimum # of command line arguments
 		{
 			otherServers[0] = args[0];
 			otherServers[1] = args[1];
 			otherServers[2] = args[2];
 			otherServers[3] = args[3];
+			isLeader = Integer.parseInt(args[4]);
 		}
 		else
 		{
 			System.out.println("Insufficient command line arguments at " + (System.currentTimeMillis()-timestart) + " milliseconds");
 			System.exit(0); // don't continue if we don't have the necessary server addresses
 		}
-		if (args.length >= 5) // If there is a port selection command line argument
+		if (args.length >= 6) // If there is a port selection command line argument
 		{
-			port = Integer.parseInt(args[0]); // Port # to listen for messages at
+			port = Integer.parseInt(args[5]); // Port # to listen for messages at
 		}
 		else
 		{
@@ -36,7 +40,7 @@ public class PaxosServer
 		LocateRegistry.createRegistry(port); // start the rmiregistry at the specificed port
 		try
 		{
-			PaxosServerInterface c = new PaxosServerImplementation(store, timestart, otherServers); // use a new thread to provide each service
+			PaxosServerInterface c = new PaxosServerImplementation(store, timestart, otherServers, node, isLeader); // use a new thread to provide each service
        		Naming.rebind("rmi://localhost:" + port + "/ThreadsService", c); // bind the service to the machine the server program is being run on
 		} 
 		catch (Exception e)
