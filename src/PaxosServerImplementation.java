@@ -130,7 +130,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 					if(result.equalsIgnoreCase("accepted")) accepts++;
 				}
 				
-				if(accepts >= 2*(5-accepts)+1){
+				if(accepts > (serverInterfaces.length + 1) / 2) {
 					myInterface.Learn(proposal);
 					for (int i = 0; i < serverInterfaces.length; i++) {
 						result = serverInterfaces[i].Learn(proposal);
