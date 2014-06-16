@@ -1,23 +1,23 @@
-java PaxosClient n01 1099 put 1 1
-java PaxosClient n02 1099 put 2 2
-java PaxosClient n03 1099 put 3 3
-java PaxosClient n04 1099 put 4 4
-java PaxosClient n05 1099 put 5 5
+java PaxosClient n01 8888 put 1 1
+java PaxosClient n02 8888 put 2 2
+java PaxosClient n03 8888 put 3 3
+java PaxosClient n04 8888 put 4 4
+java PaxosClient n05 8888 put 5 5
 
-java PaxosClient n01 1099 put 6 6
-java PaxosClient n02 1099 put 7 7
-java PaxosClient n03 1099 put 8 8
-java PaxosClient n04 1099 put 9 9
-java PaxosClient n05 1099 put 10 10
+java PaxosClient n01 8888 put 6 6
+java PaxosClient n02 8888 put 7 7
+java PaxosClient n03 8888 put 8 8
+java PaxosClient n04 8888 put 9 9
+java PaxosClient n05 8888 put 10 10
 
-java PaxosClient n01 1099 get 2
-java PaxosClient n02 1099 get 4
-java PaxosClient n03 1099 get 6
-java PaxosClient n04 1099 get 8
-java PaxosClient n05 1099 get 10
+java PaxosClient n01 8888 get 2
+java PaxosClient n02 8888 get 4
+java PaxosClient n03 8888 get 6
+java PaxosClient n04 8888 get 8
+java PaxosClient n05 8888 get 10
 
-java PaxosClient n01 1099 delete 1
-java PaxosClient n02 1099 delete 3
-java PaxosClient n03 1099 delete 5
-java PaxosClient n04 1099 delete 7
-java PaxosClient n05 1099 delete 9
+java PaxosClient n01 8888 delete 1
+java PaxosClient n02 8888 delete 3
+java PaxosClient n03 8888 delete 5
+java PaxosClient n04 8888 delete 7
+java PaxosClient n05 8888 delete 9
