@@ -180,7 +180,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		
 		Random rand = new Random();
 		int random_number = rand.nextInt(10) + 1; // generate a random # from 1-10
-		if (random_number <= 4) { // 40% chance of failure
+		if (random_number <= 3) { // 30% chance of failure
 			System.out.println("Randomized System Failure at " + (System.currentTimeMillis()-timestart) + " milliseconds");
 			try {
 			    //thread to sleep for the specified number of milliseconds
@@ -211,7 +211,6 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 
 	public String Learn(String[] proposal) throws RemoteException {
 		boolean success = false;
-		System.out.println(proposal[0] + " " + proposal[1] + " " + proposal[2]);
 		String operation = proposal[0];
 		String key = proposal[1];
 		String value = "";
@@ -222,10 +221,8 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		{
 			if (operation.equals("put"))
 			{
-				System.out.println(key + " " + value);
 				store.put(key, value); // place key/value into the Map
 				success = (store.containsKey(key) && store.get(key) == value);
-				System.out.println(store.containsKey(key));
 			}
 			else if (operation.equals("delete"))
 			{
