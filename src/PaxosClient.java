@@ -40,6 +40,7 @@ public class PaxosClient
 			// Create the reference to the remote object through the rmiregistry			
 			PaxosServerInterface server = (PaxosServerInterface)Naming.lookup("rmi://" + serverIP + ":" + port + "/ThreadsService");
 			String returnedString;
+			System.out.println("rmi://" + serverIP + ":" + port + "/ThreadsService");
 			
 			switch (operation.toLowerCase())
 			{
