@@ -173,7 +173,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		if(proposal.length == 3){
 			value = proposal[2];
 		}
-		if (operation.equals("delete") || store.containsKey(key))
+		if (operation.equals("put") || store.containsKey(key))
 		{
 			return_string = "accepted";
 		}
