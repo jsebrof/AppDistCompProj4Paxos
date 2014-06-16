@@ -1,1 +1,1 @@
-java R2FServer n01 n02 n04 n05
+java PaxosServer n01 n02 n04 n05 0
