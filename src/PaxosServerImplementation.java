@@ -56,9 +56,8 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 			{
 				serverInterfaces[i].Prop2All(proposal);
 			}
-			synchronized(this)
-			{
-				return_string = "Put received \"" + store.containsKey(key) + "\" for Value \"" + value + "\" for Key \"" + key + "\"";
+			synchronized(this){
+				return_string = "Put received \"" + (store.containsKey(key) && (store.get(key).equals(value))) + "\" for Value \"" + value + "\" for Key \"" + key + "\"";
 			}
 			System.out.println(return_string + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
 		}
@@ -109,7 +108,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 			}
 			synchronized(this)
 			{
-				return_string = "Delete received \"" + store.containsKey(key) + "\" for Key \"" + key + "\"";
+				return_string = "Delete received \"" + !store.containsKey(key) + "\" for Key \"" + key + "\"";
 			}
 			System.out.println(return_string + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
 		}
@@ -163,7 +162,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 				if(accepts > (serverInterfaces.length + 1) / 2) {
 					Learn(proposal);
 					for (int i = 0; i < serverInterfaces.length; i++) {
-						result = serverInterfaces[i].Learn(proposal);
+						serverInterfaces[i].Learn(proposal);
 					}
 				}
 			}
