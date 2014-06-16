@@ -153,6 +153,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 	}
 
 	public String Accept(String[] proposal) throws RemoteException {
+		/*
 		Random rand = new Random();
 		int random_number = rand.nextInt(10) + 1; // generate a random # from 1-10
 		if (random_number <= 3) { // 30% chance of failure
@@ -165,6 +166,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 			}
 			return null;
 		}
+		*/
 		String return_string = "rejected";
 		String operation = proposal[0];
 		String key = proposal[1];
