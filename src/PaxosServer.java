@@ -11,7 +11,7 @@ public class PaxosServer
 		long timestart = System.currentTimeMillis();
 		String[] otherServers = {"","","",""};
 		int port;
-		String node = java.net.InetAddress.getLocalHost().getHostName();
+		// String node = java.net.InetAddress.getLocalHost().getHostName();
 		int isLeader = 0;
 		if (args.length >= 5) // If there are the minimum # of command line arguments
 		{
@@ -40,7 +40,7 @@ public class PaxosServer
 		LocateRegistry.createRegistry(port); // start the rmiregistry at the specificed port
 		try
 		{
-			PaxosServerInterface c = new PaxosServerImplementation(store, timestart, otherServers, node, isLeader); // use a new thread to provide each service
+			PaxosServerInterface c = new PaxosServerImplementation(store, timestart, otherServers, /*node,*/ isLeader); // use a new thread to provide each service
        		Naming.rebind("rmi://localhost:" + port + "/ThreadsService", c); // bind the service to the machine the server program is being run on
 		} 
 		catch (Exception e)

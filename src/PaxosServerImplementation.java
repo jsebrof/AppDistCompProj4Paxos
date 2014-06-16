@@ -16,14 +16,14 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 	private boolean isLeader;
 	
 	// Constructor
-	public PaxosServerImplementation(HashMap<String, String> the_store, long the_time, String[] the_other_servers, String node, int isLeader) throws RemoteException
+	public PaxosServerImplementation(HashMap<String, String> the_store, long the_time, String[] the_other_servers, /*String node,*/ int isLeader) throws RemoteException
 	{
 		super();
 		store = the_store;
 		timestart = the_time;
 		otherServers = the_other_servers;
 		proposals = new ArrayList<String[]>();
-		this.node = node;
+		// this.node = node;
 		if(isLeader == 1) this.isLeader = true;
 		else this.isLeader = false;
 	}
@@ -38,7 +38,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		// Create references to the remote objects through the RMI registry
 		try
 		{
-			PaxosServerInterface myInterface = (PaxosServerInterface)Naming.lookup("rmi://" + this.node + "/ThreadsService");
+			//PaxosServerInterface myInterface = (PaxosServerInterface)Naming.lookup("rmi://" + this.node + "/ThreadsService");
 			PaxosServerInterface[] serverInterfaces = {
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[0] + "/ThreadsService"),
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[1] + "/ThreadsService"),
@@ -46,7 +46,8 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[3] + "/ThreadsService")};
 
 			// send proposal to each other server and for itself
-			myInterface.Prop2All(proposal);
+			//myInterface.Prop2All(proposal);
+			Prop2All(proposal);
 			for(int i = 0; i < serverInterfaces.length; i++)
 			{
 				serverInterfaces[i].Prop2All(proposal);
@@ -84,7 +85,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		// Create references to the remote objects through the RMI registry
 		try
 		{
-			PaxosServerInterface myInterface = (PaxosServerInterface)Naming.lookup("rmi://" + this.node + "/ThreadsService");
+			//PaxosServerInterface myInterface = (PaxosServerInterface)Naming.lookup("rmi://" + this.node + "/ThreadsService");
 			PaxosServerInterface[] serverInterfaces = {
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[0] + "/ThreadsService"),
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[1] + "/ThreadsService"),
@@ -92,7 +93,8 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[3] + "/ThreadsService")};
 
 			// send proposal to each other server and for itself
-			myInterface.Prop2All(proposal);
+			//myInterface.Prop2All(proposal);
+			Prop2All(proposal);
 			for(int i = 0; i < serverInterfaces.length; i++)
 			{
 				serverInterfaces[i].Prop2All(proposal);
