@@ -193,6 +193,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 	}
 
 	public String Learn(String[] proposal) throws RemoteException {
+		boolean success = false;
 		String operation = proposal[0];
 		String key = proposal[1];
 		String value = "";
@@ -204,10 +205,12 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 			if (operation == "put")
 			{
 				store.put(key, value); // place key/value into the Map
+				success = (store.containsKey(key) && store.get(key) == value);
 			}
 			else if (operation == "delete")
 			{
 				store.remove(key); // delete key/value from the Map
+				success = !store.containsKey(key);
 			}
 		}
 		for (int i = 0; i < proposals.size(); i++) {
@@ -216,7 +219,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 				break;
 			}
 		}
-		System.out.println("Learned " + operation + "(" + key + ", " + value + ")" + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
+		System.out.println("Learned " + operation + "(" + key + ", " + value + ") " + success + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
 		return "learned";
 	}
 }
