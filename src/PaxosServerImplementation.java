@@ -204,8 +204,10 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		{
 			if (operation == "put")
 			{
+				System.out.println(key + " " + value);
 				store.put(key, value); // place key/value into the Map
 				success = (store.containsKey(key) && store.get(key) == value);
+				System.out.println(store.containsKey(key));
 			}
 			else if (operation == "delete")
 			{
