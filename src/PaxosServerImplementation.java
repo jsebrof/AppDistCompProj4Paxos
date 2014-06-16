@@ -151,6 +151,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		Random rand = new Random();
 		int random_number = rand.nextInt(10) + 1; // generate a random # from 1-10
 		if (random_number <= 3) { // 30% chance of failure
+			System.out.println("Randomized System Failure at " + (System.currentTimeMillis()-timestart) + " milliseconds");
 			try {
 			    //thread to sleep for the specified number of milliseconds
 			    Thread.sleep(3000);
