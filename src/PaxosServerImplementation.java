@@ -50,7 +50,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 			{
 				serverInterfaces[i].Prop2All(proposal);
 			}
-			synchronized(store)
+			synchronized(this)
 			{
 				return_string = "Put received \"" + store.containsKey(key) + "\" for Value \"" + value + "\" for Key \"" + key + "\"";
 			}
@@ -67,7 +67,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 	public String Get(String key) throws RemoteException
 	{
 		String return_string = "Value for Key \"" + key + "\" not found in Key/Value store";
-		synchronized(store)
+		synchronized(this)
 		{
 			if (store.containsKey(key))
 			{
@@ -103,7 +103,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 			{
 				serverInterfaces[i].Prop2All(proposal);
 			}
-			synchronized(store)
+			synchronized(this)
 			{
 				return_string = "Delete received \"" + store.containsKey(key) + "\" for Key \"" + key + "\"";
 			}
@@ -181,7 +181,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		if(proposal.length == 3){
 			value = proposal[2];
 		}
-		synchronized(store)
+		synchronized(this)
 		{
 			if (operation.equals("put") || store.containsKey(key))
 			{
@@ -201,8 +201,8 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		if(proposal.length == 3){
 			value = proposal[2];
 		}
-		//synchronized(store)
-		//{
+		synchronized(this)
+		{
 			if (operation.equals("put"))
 			{
 				System.out.println(key + " " + value);
@@ -215,7 +215,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 				store.remove(key); // delete key/value from the Map
 				success = !store.containsKey(key);
 			}
-		//}
+		}
 		for (int i = 0; i < proposals.size(); i++) {
 			if(proposals.get(i).equals(proposal)){
 				proposals.remove(i);
