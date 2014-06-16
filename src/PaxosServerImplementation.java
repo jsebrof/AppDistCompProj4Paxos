@@ -201,21 +201,21 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		if(proposal.length == 3){
 			value = proposal[2];
 		}
-		synchronized(store)
-		{
-			if (operation == "put")
+		//synchronized(store)
+		//{
+			if (operation.equals("put"))
 			{
 				System.out.println(key + " " + value);
 				store.put(key, value); // place key/value into the Map
 				success = (store.containsKey(key) && store.get(key) == value);
 				System.out.println(store.containsKey(key));
 			}
-			else if (operation == "delete")
+			else if (operation.equals("delete"))
 			{
 				store.remove(key); // delete key/value from the Map
 				success = !store.containsKey(key);
 			}
-		}
+		//}
 		for (int i = 0; i < proposals.size(); i++) {
 			if(proposals.get(i).equals(proposal)){
 				proposals.remove(i);
