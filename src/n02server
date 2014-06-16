@@ -1,1 +1,1 @@
-java PaxosServer n01 n03 n04 n05 0 8888
+java PaxosServer n01:8888 n03:8888 n04:8888 n05:8888 0 8888
