@@ -28,11 +28,9 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		else this.isLeader = false;
 	}
 
-	public synchronized String Put(String key, String value) throws RemoteException // synchronized means thread safety
+	public String Put(String key, String value) throws RemoteException // synchronized means thread safety
 	{
-		String return_string;
-		return_string = "Put received \"" + store.containsKey(key) + "\" for Value \"" + value + "\" for Key \"" + key + "\"";
-
+		String return_string = "";
 		String[] proposal = {"put", key, value};
 
 		// Create references to the remote objects through the RMI registry
@@ -52,6 +50,10 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 			{
 				serverInterfaces[i].Prop2All(proposal);
 			}
+			synchronized(store)
+			{
+				return_string = "Put received \"" + store.containsKey(key) + "\" for Value \"" + value + "\" for Key \"" + key + "\"";
+			}
 			System.out.println(return_string + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
 		}
 		catch (MalformedURLException | NotBoundException e)
@@ -62,25 +64,27 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		return return_string;
 	}
 
-	public synchronized String Get(String key) throws RemoteException
+	public String Get(String key) throws RemoteException
 	{
 		String return_string = "Value for Key \"" + key + "\" not found in Key/Value store";
-		if (store.containsKey(key))
+		synchronized(store)
 		{
-			return_string = "Value for Key \"" + key + "\" is \"" + store.get(key) + "\"";
-			System.out.println(return_string + " retrieved at " + (System.currentTimeMillis()-timestart) + " milliseconds");
-		}
-		else
-		{
-			System.out.println(return_string + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
+			if (store.containsKey(key))
+			{
+				return_string = "Value for Key \"" + key + "\" is \"" + store.get(key) + "\"";
+				System.out.println(return_string + " retrieved at " + (System.currentTimeMillis()-timestart) + " milliseconds");
+			}
+			else
+			{
+				System.out.println(return_string + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
+			}
 		}
 		return return_string;
 	}
 
-	public synchronized String Delete(String key) throws RemoteException
+	public String Delete(String key) throws RemoteException
 	{
 		String return_string;
-		return_string = "Delete received \"" + store.containsKey(key) + "\" for Key \"" + key + "\"";
 		String[] proposal = {"delete",key};
 		// Create references to the remote objects through the RMI registry
 		try
@@ -98,6 +102,10 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 			for(int i = 0; i < serverInterfaces.length; i++)
 			{
 				serverInterfaces[i].Prop2All(proposal);
+			}
+			synchronized(store)
+			{
+				return_string = "Delete received \"" + store.containsKey(key) + "\" for Key \"" + key + "\"";
 			}
 			System.out.println(return_string + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
 		}
@@ -173,9 +181,12 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		if(proposal.length == 3){
 			value = proposal[2];
 		}
-		if (operation.equals("put") || store.containsKey(key))
+		synchronized(store)
 		{
-			return_string = "accepted";
+			if (operation.equals("put") || store.containsKey(key))
+			{
+				return_string = "accepted";
+			}
 		}
 		System.out.println(return_string.toUpperCase() + " (" + key + ", " + value + ")" + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
 		return return_string;
@@ -188,13 +199,16 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		if(proposal.length == 3){
 			value = proposal[2];
 		}
-		if (operation == "put")
+		synchronized(store)
 		{
-			store.put(key, value); // place key/value into the Map
-		}
-		else if (operation == "delete")
-		{
-			store.remove(key); // delete key/value from the Map
+			if (operation == "put")
+			{
+				store.put(key, value); // place key/value into the Map
+			}
+			else if (operation == "delete")
+			{
+				store.remove(key); // delete key/value from the Map
+			}
 		}
 		for (int i = 0; i < proposals.size(); i++) {
 			if(proposals.get(i).equals(proposal)){
