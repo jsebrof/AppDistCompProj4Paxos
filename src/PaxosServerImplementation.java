@@ -2,8 +2,10 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.UnmarshalException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Random;
 
 public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObject implements PaxosServerInterface {
@@ -12,13 +14,19 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 	private long timestart;
 	private String[] otherServers;
 	private ArrayList<String[]> proposals;
-	// private String node;
 	private boolean isLeader;
 
 	// Constructor
-	public PaxosServerImplementation(HashMap<String, String> the_store, long the_time, String[] the_other_servers, /*String node,*/ int isLeader) throws RemoteException
+	public PaxosServerImplementation(HashMap<String, String> the_store, long the_time, String[] the_other_servers, int isLeader) throws RemoteException
 	{
 		super();
+		/*
+		Properties p = System.getProperties();
+		p.setProperty("sun.rmi.transport.connectionTimeout", "1000");
+		p.setProperty("sun.rmi.transport.tcp.handshakeTimeout", "1000");
+		p.setProperty("sun.rmi.transport.tcp.responseTimeout", "1000");
+		p.setProperty("sun.rmi.transport.tcp.readTimeout", "1000");
+		*/
 		store = the_store;
 		timestart = the_time;
 		otherServers = the_other_servers;
@@ -36,7 +44,6 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		// Create references to the remote objects through the RMI registry
 		try
 		{
-			//PaxosServerInterface myInterface = (PaxosServerInterface)Naming.lookup("rmi://" + this.node + "/ThreadsService");
 			PaxosServerInterface[] serverInterfaces = {
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[0] + "/ThreadsService"),
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[1] + "/ThreadsService"),
@@ -44,7 +51,6 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[3] + "/ThreadsService")};
 
 			// send proposal to each other server and for itself
-			//myInterface.Prop2All(proposal);
 			Prop2All(proposal);
 			for(int i = 0; i < serverInterfaces.length; i++)
 			{
@@ -89,7 +95,6 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		// Create references to the remote objects through the RMI registry
 		try
 		{
-			//PaxosServerInterface myInterface = (PaxosServerInterface)Naming.lookup("rmi://" + this.node + "/ThreadsService");
 			PaxosServerInterface[] serverInterfaces = {
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[0] + "/ThreadsService"),
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[1] + "/ThreadsService"),
@@ -97,7 +102,6 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[3] + "/ThreadsService")};
 
 			// send proposal to each other server and for itself
-			//myInterface.Prop2All(proposal);
 			Prop2All(proposal);
 			for(int i = 0; i < serverInterfaces.length; i++)
 			{
@@ -122,7 +126,6 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		if(isLeader){
 			try
 			{
-				// PaxosServerInterface myInterface = (PaxosServerInterface)Naming.lookup("rmi://" + this.node + "/ThreadsService");
 				PaxosServerInterface[] serverInterfaces = {
 						(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[0] + "/ThreadsService"),
 						(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[1] + "/ThreadsService"),
@@ -130,20 +133,34 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 						(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[3] + "/ThreadsService")};
 
 				int accepts = 0;
-				String result;
-				// result = myInterface.Accept(proposal);
-				result = Accept(proposal);
-				if(result.equals("accepted")) accepts++;
-
+				String result = null;
+				
+				try
+				{
+					result = Accept(proposal);
+					if( result != null && result.equals("accepted")) accepts++;
+				}
+				catch (UnmarshalException ste)
+				{
+					ste.printStackTrace();
+					System.out.println("Unmarshall Exception " + ste);
+				}
+				
 				for (int i = 0; i < serverInterfaces.length; i++) {
-					result = serverInterfaces[i].Accept(proposal);
+					try
+					{
+						result = serverInterfaces[i].Accept(proposal);
+						if(result != null && result.equalsIgnoreCase("accepted")) accepts++;
+					}
+					catch (UnmarshalException ste)
+					{
+						ste.printStackTrace();
+						System.out.println("Unmarshall Exception " + ste);
+					}
 					System.out.println("Proposal " + result + " by server " + otherServers[i] + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
-
-					if(result.equalsIgnoreCase("accepted")) accepts++;
 				}
 
 				if(accepts > (serverInterfaces.length + 1) / 2) {
-					// myInterface.Learn(proposal);
 					Learn(proposal);
 					for (int i = 0; i < serverInterfaces.length; i++) {
 						result = serverInterfaces[i].Learn(proposal);
@@ -163,7 +180,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		
 		Random rand = new Random();
 		int random_number = rand.nextInt(10) + 1; // generate a random # from 1-10
-		if (random_number <= 3) { // 30% chance of failure
+		if (random_number <= 4) { // 40% chance of failure
 			System.out.println("Randomized System Failure at " + (System.currentTimeMillis()-timestart) + " milliseconds");
 			try {
 			    //thread to sleep for the specified number of milliseconds
