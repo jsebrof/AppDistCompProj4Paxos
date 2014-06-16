@@ -117,7 +117,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		if(isLeader){
 			try
 			{
-				PaxosServerInterface myInterface = (PaxosServerInterface)Naming.lookup("rmi://" + this.node + "/ThreadsService");
+				// PaxosServerInterface myInterface = (PaxosServerInterface)Naming.lookup("rmi://" + this.node + "/ThreadsService");
 				PaxosServerInterface[] serverInterfaces = {
 						(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[0] + "/ThreadsService"),
 						(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[1] + "/ThreadsService"),
@@ -126,7 +126,8 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 				
 				int accepts = 0;
 				String result;
-				result = myInterface.Accept(proposal);
+				// result = myInterface.Accept(proposal);
+				result = Accept(proposal);
 				if(result.equals("accepted")) accepts++;
 				
 				for (int i = 0; i < serverInterfaces.length; i++) {
@@ -137,7 +138,8 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 				}
 				
 				if(accepts > (serverInterfaces.length + 1) / 2) {
-					myInterface.Learn(proposal);
+					// myInterface.Learn(proposal);
+					Learn(proposal);
 					for (int i = 0; i < serverInterfaces.length; i++) {
 						result = serverInterfaces[i].Learn(proposal);
 					}
