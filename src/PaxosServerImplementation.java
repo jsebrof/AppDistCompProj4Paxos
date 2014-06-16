@@ -38,6 +38,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		// Create references to the remote objects through the RMI registry
 		try
 		{
+			System.out.println("ONE");
 			//PaxosServerInterface myInterface = (PaxosServerInterface)Naming.lookup("rmi://" + this.node + "/ThreadsService");
 			PaxosServerInterface[] serverInterfaces = {
 					(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[0] + "/ThreadsService"),
@@ -47,7 +48,9 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 
 			// send proposal to each other server and for itself
 			//myInterface.Prop2All(proposal);
+			System.out.println("TWO");
 			Prop2All(proposal);
+			System.out.println("THREE");
 			for(int i = 0; i < serverInterfaces.length; i++)
 			{
 				serverInterfaces[i].Prop2All(proposal);
