@@ -194,6 +194,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 
 	public String Learn(String[] proposal) throws RemoteException {
 		boolean success = false;
+		System.out.println(proposal[0] + " " + proposal[1] + " " + proposal[2]);
 		String operation = proposal[0];
 		String key = proposal[1];
 		String value = "";
