@@ -4,6 +4,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObject implements PaxosServerInterface {
 	private static final long serialVersionUID = -3503888069129478963L;
@@ -147,6 +148,17 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 	}
 
 	public String Accept(String[] proposal) throws RemoteException {
+		Random rand = new Random();
+		int random_number = rand.nextInt(10) + 1; // generate a random # from 1-10
+		if (random_number <= 3) { // 30% chance of failure
+			try {
+			    //thread to sleep for the specified number of milliseconds
+			    Thread.sleep(3000);
+			} catch ( java.lang.InterruptedException ie) {
+			    System.out.println("Interrupted Exception " + ie);
+			}
+			return null;
+		}
 		String return_string = "rejected";
 		String operation = proposal[0];
 		String key = proposal[1];
