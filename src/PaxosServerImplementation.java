@@ -14,7 +14,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 	private ArrayList<String[]> proposals;
 	// private String node;
 	private boolean isLeader;
-	
+
 	// Constructor
 	public PaxosServerImplementation(HashMap<String, String> the_store, long the_time, String[] the_other_servers, /*String node,*/ int isLeader) throws RemoteException
 	{
@@ -32,9 +32,9 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 	{
 		String return_string;
 		return_string = "Put received \"" + store.containsKey(key) + "\" for Value \"" + value + "\" for Key \"" + key + "\"";
-		
+
 		String[] proposal = {"put", key, value};
-		
+
 		// Create references to the remote objects through the RMI registry
 		try
 		{
@@ -108,7 +108,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		}
 		return return_string;
 	}
-	
+
 	public String Prop2All(String[] proposal) throws RemoteException {
 		proposals.add(proposal);
 		if(isLeader){
@@ -120,20 +120,20 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 						(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[1] + "/ThreadsService"),
 						(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[2] + "/ThreadsService"),
 						(PaxosServerInterface)Naming.lookup("rmi://" + otherServers[3] + "/ThreadsService")};
-				
+
 				int accepts = 0;
 				String result;
 				// result = myInterface.Accept(proposal);
 				result = Accept(proposal);
 				if(result.equals("accepted")) accepts++;
-				
+
 				for (int i = 0; i < serverInterfaces.length; i++) {
 					result = serverInterfaces[i].Accept(proposal);
 					System.out.println("Proposal " + result + " by server " + otherServers[i] + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
-					
+
 					if(result.equalsIgnoreCase("accepted")) accepts++;
 				}
-				
+
 				if(accepts > (serverInterfaces.length + 1) / 2) {
 					// myInterface.Learn(proposal);
 					Learn(proposal);
@@ -165,7 +165,7 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 			}
 			return null;
 		}
-		*/
+		 */
 		String return_string = "rejected";
 		String operation = proposal[0];
 		String key = proposal[1];
@@ -173,14 +173,9 @@ public class PaxosServerImplementation extends java.rmi.server.UnicastRemoteObje
 		if(proposal.length == 3){
 			value = proposal[2];
 		}
-		if (store.containsKey(key)){
-			if(operation.equals("delete")){
-				return_string = "accepted";
-			}else{
-				if(store.get(key).equals(value)){
-					return_string = "accepted";
-				}
-			}
+		if (operation.equals("delete") || store.containsKey(key))
+		{
+			return_string = "accepted";
 		}
 		System.out.println(return_string.toUpperCase() + " (" + key + ", " + value + ")" + " at " + (System.currentTimeMillis()-timestart) + " milliseconds");
 		return return_string;
